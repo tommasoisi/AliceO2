@@ -13,13 +13,13 @@
 
 using namespace o2::focal;
 
-ASICData::ASICData(ASICHeader firstheader, ASICHeader secondheader)
+HCALASICData::HCALASICData(HCALASICHeader firstheader, HCALASICHeader secondheader)
 {
   setFirstHeader(firstheader);
   setSecondHeader(secondheader);
 }
 
-void ASICData::setHeader(ASICHeader header, int index)
+void HCALASICData::setHeader(HCALASICHeader header, int index)
 {
   if (index >= NHALVES) {
     throw IndexException(index, NHALVES);
@@ -27,7 +27,7 @@ void ASICData::setHeader(ASICHeader header, int index)
   mHeaders[index] = header;
 }
 
-void ASICData::setChannel(ASICChannel data, int index)
+void HCALASICData::setChannel(HCALASICChannel data, int index)
 {
   if (index >= NCHANNELS) {
     throw IndexException(index, NCHANNELS);
@@ -35,12 +35,12 @@ void ASICData::setChannel(ASICChannel data, int index)
   mChannels[index] = data;
 }
 
-void ASICData::setChannels(const gsl::span<const ASICChannel> channels)
+void HCALASICData::setChannels(const gsl::span<const HCALASICChannel> channels)
 {
   std::copy(channels.begin(), channels.end(), mChannels.begin());
 }
 
-void ASICData::setCMN(ASICChannel data, int index)
+void HCALASICData::setCMN(HCALASICChannel data, int index)
 {
   if (index >= NHALVES) {
     throw IndexException(index, NHALVES);
@@ -48,12 +48,12 @@ void ASICData::setCMN(ASICChannel data, int index)
   mCMNChannels[index] = data;
 }
 
-void ASICData::setCMNs(const gsl::span<const ASICChannel> channels)
+void HCALASICData::setCMNs(const gsl::span<const HCALASICChannel> channels)
 {
   std::copy(channels.begin(), channels.end(), mCMNChannels.begin());
 }
 
-void ASICData::setCalib(ASICChannel data, int index)
+void HCALASICData::setCalib(HCALASICChannel data, int index)
 {
   if (index >= NHALVES) {
     throw IndexException(index, NHALVES);
@@ -61,12 +61,12 @@ void ASICData::setCalib(ASICChannel data, int index)
   mCalibChannels[index] = data;
 }
 
-void ASICData::setCalibs(const gsl::span<const ASICChannel> channels)
+void HCALASICData::setCalibs(const gsl::span<const HCALASICChannel> channels)
 {
   std::copy(channels.begin(), channels.end(), mCalibChannels.begin());
 }
 
-ASICHeader ASICData::getHeader(int index) const
+HCALASICHeader HCALASICData::getHeader(int index) const
 {
   if (index >= NHALVES) {
     throw IndexException(index, NHALVES);
@@ -74,17 +74,17 @@ ASICHeader ASICData::getHeader(int index) const
   return mHeaders[index];
 }
 
-gsl::span<const ASICHeader> ASICData::getHeaders() const
+gsl::span<const HCALASICHeader> HCALASICData::getHeaders() const
 {
   return mHeaders;
 }
 
-gsl::span<const ASICChannel> ASICData::getChannels() const
+gsl::span<const HCALASICChannel> HCALASICData::getChannels() const
 {
   return mChannels;
 }
 
-ASICChannel ASICData::getChannel(int index) const
+HCALASICChannel HCALASICData::getChannel(int index) const
 {
   if (index >= NCHANNELS) {
     throw IndexException(index, NCHANNELS);
@@ -92,7 +92,7 @@ ASICChannel ASICData::getChannel(int index) const
   return mChannels[index];
 }
 
-ASICChannel ASICData::getCalib(int index) const
+HCALASICChannel HCALASICData::getCalib(int index) const
 {
   if (index >= NHALVES) {
     throw IndexException(index, NHALVES);
@@ -100,25 +100,25 @@ ASICChannel ASICData::getCalib(int index) const
   return mCalibChannels[index];
 }
 
-gsl::span<const ASICChannel> ASICData::getCalibs() const
+gsl::span<const HCALASICChannel> HCALASICData::getCalibs() const
 {
   return mCalibChannels;
 }
 
-ASICChannel ASICData::getCMN(int index) const
+HCALASICChannel HCALASICData::getCMN(int index) const
 {
-  if (index >= NCHANNELS) {
-    throw IndexException(index, NCHANNELS);
+  if (index >= NHALVES) {
+    throw IndexException(index, NHALVES);
   }
   return mCMNChannels[index];
 }
 
-gsl::span<const ASICChannel> ASICData::getCMNs() const
+gsl::span<const HCALASICChannel> HCALASICData::getCMNs() const
 {
   return mCMNChannels;
 }
 
-void ASICData::reset()
+void HCALASICData::reset()
 {
   /*
   for (auto& header : mHeaders) {
@@ -134,28 +134,28 @@ void ASICData::reset()
     channel.mData = 0;
   }
   */
-  std::fill(mHeaders.begin(), mHeaders.end(), ASICHeader(0));
-  std::fill(mChannels.begin(), mChannels.end(), ASICChannel(0));
-  std::fill(mCalibChannels.begin(), mCalibChannels.end(), ASICChannel(0));
-  std::fill(mCMNChannels.begin(), mCMNChannels.end(), ASICChannel(0));
+  std::fill(mHeaders.begin(), mHeaders.end(), HCALASICHeader(0));
+  std::fill(mChannels.begin(), mChannels.end(), HCALASICChannel(0));
+  std::fill(mCalibChannels.begin(), mCalibChannels.end(), HCALASICChannel(0));
+  std::fill(mCMNChannels.begin(), mCMNChannels.end(), HCALASICChannel(0));
 }
 
-gsl::span<const TriggerWord> ASICContainer::getTriggerWords() const
+gsl::span<const HCALTriggerWord> HCALASICContainer::getTriggerWords() const
 {
   return mTriggerData;
 }
 
-void ASICContainer::appendTriggerWords(gsl::span<const TriggerWord> triggerwords)
+void HCALASICContainer::appendTriggerWords(gsl::span<const HCALTriggerWord> triggerwords)
 {
   std::copy(triggerwords.begin(), triggerwords.end(), std::back_inserter(mTriggerData));
 }
 
-void ASICContainer::appendTriggerWord(TriggerWord triggerword)
+void HCALASICContainer::appendTriggerWord(HCALTriggerWord triggerword)
 {
   mTriggerData.emplace_back(triggerword);
 }
 
-void ASICContainer::reset()
+void HCALASICContainer::reset()
 {
   mASIC.reset();
   mTriggerData.clear();
@@ -168,7 +168,7 @@ void HCALData::reset()
   }
 }
 
-const ASICContainer& HCALData::getDataForASIC(int index) const
+const HCALASICContainer& HCALData::getDataForASIC(int index) const
 {
   if (index >= NASICS) {
     throw IndexException(index, NASICS);
@@ -176,7 +176,7 @@ const ASICContainer& HCALData::getDataForASIC(int index) const
   return mASICs[index];
 }
 
-ASICContainer& HCALData::getDataForASIC(int index)
+HCALASICContainer& HCALData::getDataForASIC(int index)
 {
   if (index >= NASICS) {
     throw IndexException(index, NASICS);

@@ -31,15 +31,15 @@ struct HCALASICWord {
     struct {
       uint32_t mADC : 10;
       uint32_t mTOA : 10;
-      uint32_t mTOT : 10; 
-      uint32_t tc = 1; 
-      uint32_t tp = 1;
+      uint32_t mTOT : 10;
+      uint32_t tc : 1;
+      uint32_t tp : 1;
     }; // ASIC channel word
     uint32_t mData = 0;
   };
 };
 
-struct TriggerWord {
+struct HCALTriggerWord {
   union {
     struct {
       uint64_t mTrigger7 : 7;
@@ -57,16 +57,16 @@ struct TriggerWord {
   };
 };
 
-struct ASICHeader : public HCALASICWord {
-  ASICHeader()
+struct HCALASICHeader : public HCALASICWord {
+  HCALASICHeader()
   {
     mData = 0;
   }
-  ASICHeader(uint32_t word)
+  HCALASICHeader(uint32_t word)
   {
     mData = word;
   }
-  ASICHeader(uint32_t header, uint32_t wadd, uint32_t, uint32_t bcID, uint32_t fourbit, uint32_t trailer)
+  HCALASICHeader(uint32_t header, uint32_t wadd, uint32_t, uint32_t bcID, uint32_t fourbit, uint32_t trailer)
   {
     mTrailer = trailer;
     mWADD = wadd;
@@ -81,16 +81,16 @@ struct ASICHeader : public HCALASICWord {
   uint32_t getHeader() const { return mHeader; }
 };
 
-struct ASICChannel : public HCALASICWord {
-  ASICChannel()
+struct HCALASICChannel : public HCALASICWord {
+  HCALASICChannel()
   {
     mData = 0;
   }
-  ASICChannel(uint32_t word)
+  HCALASICChannel(uint32_t word)
   {
     mData = 0;
   }
-  ASICChannel(uint32_t adc, uint32_t toa, uint32_t tot)
+  HCALASICChannel(uint32_t adc, uint32_t toa, uint32_t tot)
   {
     mADC = adc;
     mTOA = toa;
@@ -107,8 +107,8 @@ struct HCALGBTWord {
     uint32_t mASICWords[4];
   };
 
-  const TriggerWord& getTriggerData() const { return reinterpret_cast<const TriggerWord&>(mTriggerWords[0]); }
-  const TriggerWord& getTriggerPadding() const { return reinterpret_cast<const TriggerWord&>(mTriggerWords[1]); }
+  const HCALTriggerWord& getTriggerData() const { return reinterpret_cast<const HCALTriggerWord&>(mTriggerWords[0]); }
+  const HCALTriggerWord& getTriggerPadding() const { return reinterpret_cast<const HCALTriggerWord&>(mTriggerWords[1]); }
 
   template <typename T>
   gsl::span<const T> getASICData() const
@@ -117,9 +117,9 @@ struct HCALGBTWord {
   }
 };
 
-std::ostream& operator<<(std::ostream& stream, const ASICChannel& channel);
-std::ostream& operator<<(std::ostream& stream, const ASICHeader& header);
-std::ostream& operator<<(std::ostream& stream, const TriggerWord& trigger);
+std::ostream& operator<<(std::ostream& stream, const HCALASICChannel& channel);
+std::ostream& operator<<(std::ostream& stream, const HCALASICHeader& header);
+std::ostream& operator<<(std::ostream& stream, const HCALTriggerWord& trigger);
 
 } // namespace o2::focal
 

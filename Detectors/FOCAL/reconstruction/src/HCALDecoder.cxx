@@ -30,27 +30,33 @@ void HCALDecoder::reset()
 void HCALDecoder::decodeEvent(gsl::span<const HCALGBTWord> gbtdata)
 {
   LOG(debug) << "decoding hcal data of size " << gbtdata.size() << "  GBT words - " << gbtdata.size() * sizeof(HCALGBTWord) / sizeof(uint64_t) << " 64 bit words";
-  // first 39 GBT words : ASIC data
+  // first 35 GBT words : ASIC data
   // Other words: Trigger data
-  std::size_t asicsize = 39 * HCALData::NASICS;
+
+  // Note from Nina: 
+  // The decoder was throwing an index error when run through the workflow because of a mismatch between the 64 HCAL channels and the 72 Pad channels
+  // Quick fix: Changed hardcoded channel numbers in this file to be compatible with the number of HCAL channels, now the workflows execute and produce a root file
+  // Thing to think about: Do we need to fundamentally change the data format to account for half a chip corresponding to 1 PCB in HCAL (move to 4x8 matrix of 32 channels with HCAL_NPCBS = 8 in the dataformat, instead of the current setup which is an 8x8 matrix of 64 channels with HCAL_NPCBS = 4 in the dataformat)
+
+  std::size_t asicsize = 35 * HCALData::NASICS; 
   auto asicwords = gbtdata.subspan(0, asicsize);
   auto triggerwords = gbtdata.subspan(asicsize, gbtdata.size() - asicsize);
   for (int iasic = 0; iasic < HCALData::NASICS; iasic++) {
     // First part: ASIC words
     auto& asicdata = mData[iasic].getASIC();
-    auto wordsthisAsic = asicwords.subspan(iasic * 39, 39);
-    auto headerwords = wordsthisAsic[0].getASICData<ASICHeader>();
+    auto wordsthisAsic = asicwords.subspan(iasic * 35, 35);
+    auto headerwords = wordsthisAsic[0].getASICData<HCALASICHeader>();
     asicdata.setFirstHeader(headerwords[0]);
     asicdata.setSecondHeader(headerwords[1]);
     int nchannels = 0;
-    for (auto& datawords : wordsthisAsic.subspan(1, 36)) {
-      for (auto& channelword : datawords.getASICData<ASICChannel>()) {
+    for (auto& datawords : wordsthisAsic.subspan(1, 32)) {
+      for (auto& channelword : datawords.getASICData<HCALASICChannel>()) {
         asicdata.setChannel(channelword, nchannels);
         nchannels++;
       }
     }
-    asicdata.setCMNs(wordsthisAsic[37].getASICData<ASICChannel>());
-    asicdata.setCalibs(wordsthisAsic[38].getASICData<ASICChannel>());
+    asicdata.setCMNs(wordsthisAsic[33].getASICData<HCALASICChannel>());
+    asicdata.setCalibs(wordsthisAsic[34].getASICData<HCALASICChannel>());
 
     // Second part: Trigger words
     auto wordsTriggerThisAsic = triggerwords.subspan(iasic * mWin_dur, mWin_dur);

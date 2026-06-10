@@ -24,7 +24,7 @@
 
 namespace o2::focal
 {
-class ASICData
+class HCALASICData
 {
  public:
   class IndexException : public std::exception
@@ -53,73 +53,73 @@ class ASICData
   static constexpr int NCHANNELS = 64;
   static constexpr int NHALVES = 2;
 
-  ASICData() = default;
-  ASICData(ASICHeader firstheader, ASICHeader secondheader);
+  HCALASICData() = default;
+  HCALASICData(HCALASICHeader firstheader, HCALASICHeader secondheader);
 
-  void setFirstHeader(ASICHeader header) { setHeader(header, 0); }
-  void setSecondHeader(ASICHeader header) { setHeader(header, 1); }
-  void setHeader(ASICHeader header, int index);
+  void setFirstHeader(HCALASICHeader header) { setHeader(header, 0); }
+  void setSecondHeader(HCALASICHeader header) { setHeader(header, 1); }
+  void setHeader(HCALASICHeader header, int index);
 
-  void setChannel(ASICChannel data, int index);
-  void setChannels(const gsl::span<const ASICChannel> channels);
+  void setChannel(HCALASICChannel data, int index);
+  void setChannels(const gsl::span<const HCALASICChannel> channels);
 
-  void setFirstCMN(ASICChannel data) { setCMN(data, 0); }
-  void setSecondCMN(ASICChannel data) { setCMN(data, 1); }
-  void setCMN(ASICChannel data, int index);
-  void setCMNs(const gsl::span<const ASICChannel> channels);
+  void setFirstCMN(HCALASICChannel data) { setCMN(data, 0); }
+  void setSecondCMN(HCALASICChannel data) { setCMN(data, 1); }
+  void setCMN(HCALASICChannel data, int index);
+  void setCMNs(const gsl::span<const HCALASICChannel> channels);
 
-  void setFirstCalib(ASICChannel data) { setCalib(data, 0); }
-  void setSecondCalib(ASICChannel data) { setCalib(data, 1); }
-  void setCalib(ASICChannel data, int index);
-  void setCalibs(const gsl::span<const ASICChannel> channels);
+  void setFirstCalib(HCALASICChannel data) { setCalib(data, 0); }
+  void setSecondCalib(HCALASICChannel data) { setCalib(data, 1); }
+  void setCalib(HCALASICChannel data, int index);
+  void setCalibs(const gsl::span<const HCALASICChannel> channels);
 
-  ASICHeader getFirstHeader() const { return getHeader(0); }
-  ASICHeader getSecondHeader() const { return getHeader(1); }
-  ASICHeader getHeader(int index) const;
-  gsl::span<const ASICHeader> getHeaders() const;
+  HCALASICHeader getFirstHeader() const { return getHeader(0); }
+  HCALASICHeader getSecondHeader() const { return getHeader(1); }
+  HCALASICHeader getHeader(int index) const;
+  gsl::span<const HCALASICHeader> getHeaders() const;
 
-  gsl::span<const ASICChannel> getChannels() const;
-  ASICChannel getChannel(int index) const;
+  gsl::span<const HCALASICChannel> getChannels() const;
+  HCALASICChannel getChannel(int index) const;
 
-  ASICChannel getFirstCalib() const { return getCalib(0); }
-  ASICChannel getSecondCalib() const { return getCalib(1); }
-  ASICChannel getCalib(int index) const;
-  gsl::span<const ASICChannel> getCalibs() const;
+  HCALASICChannel getFirstCalib() const { return getCalib(0); }
+  HCALASICChannel getSecondCalib() const { return getCalib(1); }
+  HCALASICChannel getCalib(int index) const;
+  gsl::span<const HCALASICChannel> getCalibs() const;
 
-  ASICChannel getFirstCMN() const { return getCMN(0); }
-  ASICChannel getSecondCMN() const { return getCMN(1); }
-  ASICChannel getCMN(int index) const;
-  gsl::span<const ASICChannel> getCMNs() const;
+  HCALASICChannel getFirstCMN() const { return getCMN(0); }
+  HCALASICChannel getSecondCMN() const { return getCMN(1); }
+  HCALASICChannel getCMN(int index) const;
+  gsl::span<const HCALASICChannel> getCMNs() const;
 
   void reset();
 
  private:
-  std::array<ASICHeader, NHALVES> mHeaders;
-  std::array<ASICChannel, NCHANNELS> mChannels;
-  std::array<ASICChannel, NHALVES> mCalibChannels;
-  std::array<ASICChannel, NHALVES> mCMNChannels;
+  std::array<HCALASICHeader, NHALVES> mHeaders;
+  std::array<HCALASICChannel, NCHANNELS> mChannels;
+  std::array<HCALASICChannel, NHALVES> mCalibChannels;
+  std::array<HCALASICChannel, NHALVES> mCMNChannels;
 
-  ClassDefNV(ASICData, 1);
+  ClassDefNV(HCALASICData, 1);
 };
 
-class ASICContainer
+class HCALASICContainer
 {
  public:
-  ASICContainer() = default;
-  ~ASICContainer() = default;
+  HCALASICContainer() = default;
+  ~HCALASICContainer() = default;
 
-  const ASICData& getASIC() const { return mASIC; }
-  ASICData& getASIC() { return mASIC; }
-  gsl::span<const TriggerWord> getTriggerWords() const;
-  void appendTriggerWords(gsl::span<const TriggerWord> triggerwords);
-  void appendTriggerWord(TriggerWord triggerword);
+  const HCALASICData& getASIC() const { return mASIC; }
+  HCALASICData& getASIC() { return mASIC; }
+  gsl::span<const HCALTriggerWord> getTriggerWords() const;
+  void appendTriggerWords(gsl::span<const HCALTriggerWord> triggerwords);
+  void appendTriggerWord(HCALTriggerWord triggerword);
   void reset();
 
  private:
-  ASICData mASIC;
-  std::vector<TriggerWord> mTriggerData;
+  HCALASICData mASIC;
+  std::vector<HCALTriggerWord> mTriggerData;
 
-  ClassDefNV(ASICContainer, 1);
+  ClassDefNV(HCALASICContainer, 1);
 };
 
 class HCALData
@@ -152,15 +152,15 @@ class HCALData
   HCALData() = default;
   ~HCALData() = default;
 
-  const ASICContainer& operator[](int index) const { return getDataForASIC(index); }
-  ASICContainer& operator[](int index) { return getDataForASIC(index); }
+  const HCALASICContainer& operator[](int index) const { return getDataForASIC(index); }
+  HCALASICContainer& operator[](int index) { return getDataForASIC(index); }
 
-  const ASICContainer& getDataForASIC(int index) const;
-  ASICContainer& getDataForASIC(int index);
+  const HCALASICContainer& getDataForASIC(int index) const;
+  HCALASICContainer& getDataForASIC(int index);
   void reset();
 
  private:
-  std::array<ASICContainer, NASICS> mASICs;
+  std::array<HCALASICContainer, NASICS> mASICs;
 
   ClassDefNV(HCALData, 1);
 };

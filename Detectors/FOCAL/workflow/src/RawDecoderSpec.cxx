@@ -32,6 +32,7 @@
 #include <set>
 
 using namespace o2::focal::reco_workflow;
+using namespace o2::focal;
 
 void RawDecoderSpec::init(framework::InitContext& ctx)
 {
@@ -457,7 +458,7 @@ RawDecoderSpec::createHcalPCBEvent(const o2::focal::HCALData& data) const
     const auto& cont = data.getDataForASIC(asicIndex);
     const auto& asic = cont.getASIC();
 
-    for (int ihalf = 0; ihalf < o2::focal::ASICData::NHALVES; ++ihalf) {
+    for (int ihalf = 0; ihalf < o2::focal::HCALASICData::NHALVES; ++ihalf) {
       const auto header = asic.getHeader(ihalf);
       const auto calib  = asic.getCalib(ihalf);
       const auto cmn    = asic.getCMN(ihalf);
@@ -468,7 +469,7 @@ RawDecoderSpec::createHcalPCBEvent(const o2::focal::HCALData& data) const
       result[ipcb].setCMN(ihalf, cmn.getADC(), cmn.getTOA(), cmn.getTOT());
     }
 
-    for (int ich = 0; ich < o2::focal::ASICData::NCHANNELS; ++ich) {
+    for (int ich = 0; ich < o2::focal::HCALASICData::NCHANNELS; ++ich) {
       const auto ch = asic.getChannel(ich);
       result[ipcb].setChannel(ich, ch.getADC(), ch.getTOA(), ch.getTOT());
     }

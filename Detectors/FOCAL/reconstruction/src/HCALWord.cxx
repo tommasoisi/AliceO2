@@ -13,19 +13,19 @@
 #include <iostream>
 #include "FOCALReconstruction/HCALWord.h"
 
-std::ostream& o2::focal::operator<<(std::ostream& stream, const ASICChannel& channel)
+std::ostream& o2::focal::operator<<(std::ostream& stream, const HCALASICChannel& channel)
 {
   stream << "(ADC) " << channel.getADC() << ", (TOA) " << channel.getTOA() << ", (TOT) " << channel.getTOT();
   return stream;
 }
 
-std::ostream& o2::focal::operator<<(std::ostream& stream, const ASICHeader& header)
+std::ostream& o2::focal::operator<<(std::ostream& stream, const HCALASICHeader& header)
 {
   stream << "(HEADER) 0x" << std::hex << header.getHeader() << std::dec << "(BCID) " << header.getBCID() << ", WADD " << header.getWadd() << ", (FOURBIT) " << std::bitset<4>(header.getFourbit()) << ", (TRAILER) 0x" << std::hex << header.getTrailer() << std::dec;
   return stream;
 }
 
-std::ostream& o2::focal::operator<<(std::ostream& stream, const TriggerWord& trigger)
+std::ostream& o2::focal::operator<<(std::ostream& stream, const HCALTriggerWord& trigger)
 {
   stream << "(HEADER0) 0x" << std::hex << trigger.mHeader0 << ", (HEADER1) 0x" << trigger.mHeader1 << std::dec << ": " << trigger.mTrigger0 << ", " << trigger.mTrigger1 << ", " << trigger.mTrigger2 << ", " << trigger.mTrigger3 << ", " << trigger.mTrigger4 << ", " << trigger.mTrigger5 << ", " << trigger.mTrigger6 << ", " << trigger.mTrigger7;
   return stream;
